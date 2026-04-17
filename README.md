@@ -1,5 +1,7 @@
 # LOPO Experiment Package
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19636461.svg)](https://doi.org/10.5281/zenodo.19636461)
+
 This package contains the code and raw outputs needed to run and inspect the strict leave-one-project-out (LOPO) experiments reported in the study.
 It is intentionally limited to the experiment layer: it does not include manuscript-generation, LaTeX table generation, figure generation, or PDF build scripts.
 
