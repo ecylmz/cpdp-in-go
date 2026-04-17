@@ -1,0 +1,33 @@
+{
+  "granularity": "file",
+  "random_seed": 42,
+  "primary_metric": "f1",
+  "resampling": "smote",
+  "model_names": [
+    "naive_bayes",
+    "logistic_regression",
+    "random_forest",
+    "xgboost"
+  ],
+  "exclude_go_metrics": false,
+  "smote_k_neighbors": 1,
+  "save_predictions": false,
+  "available_projects": [
+    "caddy",
+    "compose",
+    "consul",
+    "fiber",
+    "gin",
+    "gitea",
+    "grafana",
+    "influxdb",
+    "kubernetes",
+    "minio",
+    "nomad",
+    "packer",
+    "rclone",
+    "terraform",
+    "traefik",
+    "vault"
+  ]
+}
