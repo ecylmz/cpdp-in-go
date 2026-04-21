@@ -6,6 +6,7 @@ from datetime import datetime
 import json
 import logging
 from pathlib import Path
+import sys
 import time
 from typing import Any
 import warnings
@@ -61,9 +62,14 @@ def _should_suppress_matmul_runtime_warnings(model_name: str) -> bool:
     return model_name in {"logistic_regression", "voting"}
 
 
-def _determine_search_n_jobs(model_name: str, requested_n_jobs: int) -> int:
+def _determine_search_n_jobs(model_name: str, requested_n_jobs: int, granularity: str) -> int:
     if _should_suppress_matmul_runtime_warnings(model_name):
         return 1
+    if sys.platform == "darwin" and model_name == "random_forest":
+        if granularity in {"commit", "file"}:
+            return 1
+        if granularity == "method":
+            return min(requested_n_jobs, 2)
     return requested_n_jobs
 
 
@@ -286,7 +292,7 @@ def _build_analysis_summary(
         model_summaries[model_name] = {
             "is_best_model": model_name == posthoc_best_model_name,
             "requested_search_n_jobs": config.n_jobs,
-            "effective_search_n_jobs": _determine_search_n_jobs(model_name, config.n_jobs),
+            "effective_search_n_jobs": _determine_search_n_jobs(model_name, config.n_jobs, granularity),
             "target_project_count": int(all_model_rows["target_project"].nunique()) if not all_model_rows.empty else 0,
             "successful_target_project_count": int(ok_model_rows["target_project"].nunique()) if not ok_model_rows.empty else 0,
             "error_target_project_count": int((all_model_rows["status"] == "error").sum()) if not all_model_rows.empty else 0,
@@ -445,7 +451,7 @@ def _fit_single_model(
     granularity: str,
 ) -> tuple[dict[str, Any], pd.DataFrame | None]:
     model_spec = get_model_specs([model_name])[0]
-    search_n_jobs = _determine_search_n_jobs(model_name, config.n_jobs)
+    search_n_jobs = _determine_search_n_jobs(model_name, config.n_jobs, granularity)
     search_backend = _determine_search_backend(model_name, search_n_jobs)
     backend_label = search_backend or ("joblib-default" if search_n_jobs != 1 else "serial")
     pipeline = build_modeling_pipeline(
@@ -733,7 +739,7 @@ def run_lopo_experiment(granularity: str, config: ExperimentConfig) -> Granulari
                     "Evaluating target=%s, model=%s, search_n_jobs=%d",
                     target_project,
                     model_name,
-                    _determine_search_n_jobs(model_name, config.n_jobs),
+                    _determine_search_n_jobs(model_name, config.n_jobs, granularity),
                 )
                 progress_bar.set_postfix(target=target_project, model=model_name)
                 model_started_at = time.perf_counter()

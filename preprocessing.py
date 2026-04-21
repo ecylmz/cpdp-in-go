@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import RandomOverSampler, SMOTE
 from imblearn.pipeline import Pipeline as ImbPipeline
 from sklearn.feature_selection import VarianceThreshold
 from sklearn.impute import SimpleImputer
@@ -25,6 +25,8 @@ def build_modeling_pipeline(
     sampler: Any
     if resampling_strategy == "smote":
         sampler = SMOTE(random_state=random_seed, k_neighbors=smote_k_neighbors)
+    elif resampling_strategy == "random_over":
+        sampler = RandomOverSampler(random_state=random_seed)
     elif resampling_strategy == "none":
         sampler = "passthrough"
     else:

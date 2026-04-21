@@ -9,9 +9,11 @@ It is intentionally limited to the experiment layer: it does not include manuscr
 
 - `run_experiment.py`: main entry point for LOPO baseline runs.
 - `lopo_runner.py`, `data_loading.py`, `evaluation.py`, `models.py`, `preprocessing.py`, `feature_schema.py`, `stats.py`: supporting experiment modules used by the entry point.
-- `configs/`: experiment configurations for the main baseline and the no-Go ablation runs.
+- `configs/`: experiment configurations for the main baseline, the matched no-Go ablation, and the resampling-sensitivity runs.
 - `results_lopo_baseline/`: raw outputs for the main strict LOPO baseline across commit, file, and method granularity.
 - `results_lopo_baseline_no_go_metrics_matched/`: raw outputs for the matched no-Go ablation reported in the paper.
+- `results_lopo_baseline_resampling_random_over/`: raw outputs for the random-oversampling robustness run.
+- `results_lopo_baseline_no_resampling/`: raw outputs for the no-resampling robustness run.
 
 ## Required Setup
 
@@ -95,11 +97,22 @@ uv run python run_experiment.py --config configs/no_go_metrics.yaml
 uv run python run_experiment.py --config configs/no_go_metrics_method.yaml
 ```
 
+### Resampling sensitivity runs
+
+The release package also includes the auxiliary robustness runs used to compare the main SMOTE baseline against random oversampling and no resampling.
+
+```bash
+uv run python run_experiment.py --config configs/review_resampling_random_over.yaml
+uv run python run_experiment.py --config configs/review_resampling_none.yaml
+```
+
 ## Configuration Files
 
 - `configs/default.yaml`: main strict LOPO baseline for commit, file, and method.
 - `configs/no_go_metrics.yaml`: matched no-Go ablation configuration for the file-level setting.
 - `configs/no_go_metrics_method.yaml`: matched no-Go ablation configuration for the method-level setting.
+- `configs/review_resampling_random_over.yaml`: robustness configuration that reruns all granularities with random oversampling.
+- `configs/review_resampling_none.yaml`: robustness configuration that reruns all granularities without any resampling.
 - `configs/commit_example.yaml`: small example configuration for a commit-only run.
 
 Each config controls the output directory, granularity selection, model list, resampling, and related experiment settings.
@@ -131,3 +144,23 @@ This directory stores the raw outputs for the matched ablation where Go-specific
 - `statistical_tests.json`: paired statistical comparison results for the matched ablation outputs.
 
 The file structure inside `file/` and `method/` matches the structure used in the main baseline output directories.
+
+### `results_lopo_baseline_resampling_random_over/`
+
+This directory stores the raw outputs for the robustness run that replaces SMOTE with random oversampling.
+
+- `commit/`, `file/`, `method/`: per-granularity experiment outputs under the alternative resampling policy.
+- `granularity_comparison.csv`: combined summary rows for the random-oversampling run.
+- `statistical_tests.json`: paired statistical comparison results for the selected outputs under random oversampling.
+
+The file structure inside each granularity directory matches the structure used in the main baseline output directories.
+
+### `results_lopo_baseline_no_resampling/`
+
+This directory stores the raw outputs for the robustness run that disables resampling entirely.
+
+- `commit/`, `file/`, `method/`: per-granularity experiment outputs under the no-resampling policy.
+- `granularity_comparison.csv`: combined summary rows for the no-resampling run.
+- `statistical_tests.json`: paired statistical comparison results for the selected outputs under no resampling.
+
+The file structure inside each granularity directory matches the structure used in the main baseline output directories.
