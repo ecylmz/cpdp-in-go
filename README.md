@@ -1,166 +1,125 @@
-# LOPO Experiment Package
+# CPDP in Go: Experiment and Analysis Code
 
-[![DOI](https://zenodo.org/badge/1213636309.svg)](https://doi.org/10.5281/zenodo.19636460)
+This repository is the code-only `v2.0` artifact for strict leave-one-project-out (LOPO) cross-project defect prediction experiments on Go repositories. It contains experiment modules, configurations, and analysis scripts.
 
-This package contains the code and raw outputs needed to run and inspect the strict leave-one-project-out (LOPO) experiments reported in the study.
-It is intentionally limited to the experiment layer: it does not include manuscript-generation, LaTeX table generation, figure generation, or PDF build scripts.
+The repository intentionally does not contain raw datasets, generated result directories, generated tables or figures, manuscript material, submission files, or PDFs.
 
-## What This Package Contains
+## Repository layout
 
-- `run_experiment.py`: main entry point for LOPO baseline runs.
-- `lopo_runner.py`, `data_loading.py`, `evaluation.py`, `models.py`, `preprocessing.py`, `feature_schema.py`, `stats.py`: supporting experiment modules used by the entry point.
-- `configs/`: experiment configurations for the main baseline, the matched no-Go ablation, and the resampling-sensitivity runs.
-- `results_lopo_baseline/`: raw outputs for the main strict LOPO baseline across commit, file, and method granularity.
-- `results_lopo_baseline_no_go_metrics_matched/`: raw outputs for the matched no-Go ablation reported in the paper.
-- `results_lopo_baseline_resampling_random_over/`: raw outputs for the random-oversampling robustness run.
-- `results_lopo_baseline_no_resampling/`: raw outputs for the no-resampling robustness run.
+- `run_experiment.py`: main entry point for commit-, file-, and method-level LOPO runs.
+- `data_loading.py`, `feature_schema.py`, `preprocessing.py`, `models.py`, `evaluation.py`, `lopo_runner.py`, and `stats.py`: experiment implementation.
+- `configs/`: baseline, feature-ablation, resampling, and SMOTE-neighborhood configurations.
+- `analysis/`: scripts that summarize experiment outputs and run sensitivity or diagnostic analyses.
+- `tests/`: lightweight implementation checks.
 
-## Required Setup
+## Environment
 
-Use a Python environment that includes the packages used by the study. Install the dependencies from `requirements.txt`:
+Python 3.12 and `uv` are used for all commands:
 
 ```bash
-python -m pip install -r requirements.txt
+uv sync
+uv run pytest -q
 ```
 
-If you use `uv`, you can install them with:
+No virtual-environment activation is required.
 
-```bash
-uv venv
-source .venv/bin/activate
-uv pip install -r requirements.txt
+## Dataset preparation
+
+The raw GoBug CSV exports are not redistributed. Obtain them from IEEE Dataport using DOI [`10.21227/bk5q-fs89`](https://dx.doi.org/10.21227/bk5q-fs89), then retain the released project folders under:
+
+```text
+commit_data/<project>/bugs.csv
+commit_data/<project>/non_bugs.csv
+file_data/<project>/file_bug_metrics.csv
+file_data/<project>/file_non_bug_metrics.csv
+method_data/<project>/method_bug_metrics.csv
+method_data/<project>/method_non_bug_metrics.csv
 ```
 
-The dependency set includes versions compatible with:
+## Experiment commands
 
-- `numpy`
-- `pandas`
-- `scipy`
-- `scikit-learn`
-- `imbalanced-learn`
-- `PyYAML`
-- `xgboost`
-- `tqdm`
-- `joblib`
-
-If you use `uv`, you can still run the commands below with `uv run ...`.
-
-## Dataset Preparation
-
-This package does not bundle the GoBug dataset.
-Download the released GoBug CSV exports from IEEE Dataport:
-
-- `https://dx.doi.org/10.21227/bk5q-fs89`
-
-After downloading, place the CSV files under the package root using the following directory layout.
-Keep the original per-project folder structure and filenames.
-
-### Commit-level data
-
-- `commit_data/<project>/bugs.csv`
-- `commit_data/<project>/non_bugs.csv`
-
-### File-level data
-
-- `file_data/<project>/file_bug_metrics.csv`
-- `file_data/<project>/file_non_bug_metrics.csv`
-
-### Method-level data
-
-- `method_data/<project>/method_bug_metrics.csv`
-- `method_data/<project>/method_non_bug_metrics.csv`
-
-## How To Run The Experiments
-
-Run commands from the package root.
-
-### Main baseline across all granularities
+Run the main strict-LOPO baseline:
 
 ```bash
 uv run python run_experiment.py --config configs/default.yaml
 ```
 
-### Single granularity only
+Run one granularity:
 
 ```bash
 uv run python run_experiment.py --config configs/default.yaml --granularity commit
 ```
 
-Replace `commit` with `file`, `method`, or `all` as needed.
-
-### Matched no-Go ablation
-
-File and method ablation configs are provided under `configs/`.
+Run the matched feature-removal conditions:
 
 ```bash
 uv run python run_experiment.py --config configs/no_go_metrics.yaml
 uv run python run_experiment.py --config configs/no_go_metrics_method.yaml
 ```
 
-### Resampling sensitivity runs
-
-The release package also includes the auxiliary robustness runs used to compare the main SMOTE baseline against random oversampling and no resampling.
+Run resampling and SMOTE-neighborhood sensitivities:
 
 ```bash
-uv run python run_experiment.py --config configs/review_resampling_random_over.yaml
-uv run python run_experiment.py --config configs/review_resampling_none.yaml
+uv run python run_experiment.py --config configs/resampling_random_over.yaml
+uv run python run_experiment.py --config configs/resampling_none.yaml
+uv run python run_experiment.py --config configs/smote_k5.yaml
 ```
 
-## Configuration Files
+Each experiment writes its CSV, JSON, checkpoint, and log files to the `output_root` declared in its configuration. These generated directories are ignored by Git.
 
-- `configs/default.yaml`: main strict LOPO baseline for commit, file, and method.
-- `configs/no_go_metrics.yaml`: matched no-Go ablation configuration for the file-level setting.
-- `configs/no_go_metrics_method.yaml`: matched no-Go ablation configuration for the method-level setting.
-- `configs/review_resampling_random_over.yaml`: robustness configuration that reruns all granularities with random oversampling.
-- `configs/review_resampling_none.yaml`: robustness configuration that reruns all granularities without any resampling.
-- `configs/commit_example.yaml`: small example configuration for a commit-only run.
+## Analysis commands
 
-Each config controls the output directory, granularity selection, model list, resampling, and related experiment settings.
+Summarize the main LOPO results and generate statistical tables and figures:
 
-## Results Directory Guide
+```bash
+uv run python analysis/summarize_lopo_results.py \
+  --results-root results_lopo_baseline \
+  --output-root analysis_output
+```
 
-### `results_lopo_baseline/`
+Analyze the matched Go-feature ablation:
 
-This is the main raw-results directory for the strict LOPO baseline.
+```bash
+uv run python analysis/analyze_go_feature_ablation.py \
+  --full-results-root results_lopo_baseline \
+  --no-go-results-root results_lopo_baseline_no_go_metrics_matched \
+  --output-root analysis_output
+```
 
-- `commit/`, `file/`, `method/`: per-granularity experiment outputs.
-- `granularity_comparison.csv`: combined summary rows used for cross-granularity comparison.
-- `statistical_tests.json`: paired statistical comparison results for the selected granularity outputs.
+Analyze resampling and selection-objective sensitivity:
 
-Within each per-granularity directory you will find:
+```bash
+uv run python analysis/analyze_robustness.py \
+  --main-results-root results_lopo_baseline \
+  --random-over-results-root results_lopo_baseline_resampling_random_over \
+  --no-resampling-results-root results_lopo_baseline_no_resampling \
+  --output-root analysis_output
+```
 
-- `data_quality_report.csv`: project-level data loading and cleaning diagnostics.
-- `per_project_results.csv`: held-out results for each target project and model.
-- `aggregated_results.json`: aggregated descriptive summaries across held-out projects.
-- `analysis_summary.json`: audit-style summary of the run, configuration, and selection behavior.
-- `run_signature.json`: run identity metadata used to detect incompatible reruns.
+Compare the complete nested SMOTE `k=1` and `k=5` runs:
 
-### `results_lopo_baseline_no_go_metrics_matched/`
+```bash
+uv run python analysis/compare_smote_k5.py \
+  --baseline-root results_lopo_baseline \
+  --k5-root results_lopo_baseline_smote_k5 \
+  --output-root analysis_output/generated
+```
 
-This directory stores the raw outputs for the matched ablation where Go-specific metrics are removed.
+Run the deterministic label, temporal-reference, effort-aware, support-threshold, transfer-boundary, feature-correlation, harmonization, and conflict-cleaning diagnostics:
 
-- `file/`, `method/`: per-granularity matched ablation outputs.
-- `granularity_comparison.csv`: combined comparison summary for the matched ablation outputs.
-- `statistical_tests.json`: paired statistical comparison results for the matched ablation outputs.
+```bash
+uv run python analysis/generate_diagnostics.py \
+  --data-root . \
+  --results-root results_lopo_baseline \
+  --output-root analysis_output
+```
 
-The file structure inside `file/` and `method/` matches the structure used in the main baseline output directories.
+Analysis outputs are written under `analysis_output/`, which is ignored by Git.
 
-### `results_lopo_baseline_resampling_random_over/`
+## Methodological constraints
 
-This directory stores the raw outputs for the robustness run that replaces SMOTE with random oversampling.
-
-- `commit/`, `file/`, `method/`: per-granularity experiment outputs under the alternative resampling policy.
-- `granularity_comparison.csv`: combined summary rows for the random-oversampling run.
-- `statistical_tests.json`: paired statistical comparison results for the selected outputs under random oversampling.
-
-The file structure inside each granularity directory matches the structure used in the main baseline output directories.
-
-### `results_lopo_baseline_no_resampling/`
-
-This directory stores the raw outputs for the robustness run that disables resampling entirely.
-
-- `commit/`, `file/`, `method/`: per-granularity experiment outputs under the no-resampling policy.
-- `granularity_comparison.csv`: combined summary rows for the no-resampling run.
-- `statistical_tests.json`: paired statistical comparison results for the selected outputs under no resampling.
-
-The file structure inside each granularity directory matches the structure used in the main baseline output directories.
+- Target-project data remain excluded from fitted preprocessing, hyperparameter tuning, model-family selection, and model fitting.
+- Commit, file, and method runs remain separate.
+- Statistical comparisons use fold-local model selections; post-hoc best-model summaries are descriptive only.
+- Resampling is applied only inside training-side pipelines.
+- The method-level random-forest search retains joblib's default process backend.

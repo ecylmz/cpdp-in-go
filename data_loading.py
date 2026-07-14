@@ -10,6 +10,9 @@ import pandas as pd
 from feature_schema import get_feature_columns, get_prediction_metadata_columns, get_schema
 
 
+AGGREGATE_DATA_DIR_NAMES = {"all", "combined"}
+
+
 @dataclass
 class DataQualityReport:
     project_id: str
@@ -38,7 +41,13 @@ def list_available_projects(granularity: str) -> list[str]:
     schema = get_schema(granularity)
     if not schema.data_dir.exists():
         raise FileNotFoundError(f"Data directory not found for granularity '{granularity}': {schema.data_dir}")
-    return sorted(entry.name for entry in schema.data_dir.iterdir() if entry.is_dir() and not entry.name.startswith("_"))
+    return sorted(
+        entry.name
+        for entry in schema.data_dir.iterdir()
+        if entry.is_dir()
+        and not entry.name.startswith("_")
+        and entry.name not in AGGREGATE_DATA_DIR_NAMES
+    )
 
 
 def _read_labeled_file(file_path: Any, label: int) -> pd.DataFrame:

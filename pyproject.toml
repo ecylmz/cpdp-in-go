@@ -1,0 +1,26 @@
+[project]
+name = "cpdp-in-go"
+version = "2.0.0"
+description = "Strict LOPO baselines and reproducibility analyses for cross-project defect prediction in Go"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "imbalanced-learn>=0.12",
+  "matplotlib>=3.8",
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "pyyaml>=6.0",
+  "scikit-learn>=1.4",
+  "scipy>=1.12",
+  "tqdm>=4.66",
+  "xgboost>=2.1",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

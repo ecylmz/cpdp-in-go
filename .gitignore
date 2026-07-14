@@ -1,7 +1,13 @@
 log/
 **/logs/
 **/*.log
+commit_data/
+file_data/
+method_data/
+results_*/
+analysis_output/
 __pycache__/
 **/__pycache__/
+.pytest_cache/
 *.pyc
 .venv/

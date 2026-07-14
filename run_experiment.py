@@ -15,26 +15,6 @@ from stats import build_granularity_comparison_rows, run_pairwise_granularity_te
 
 ALL_GRANULARITIES = ["commit", "file", "method"]
 SUPPORTED_PRIMARY_METRICS = {"f1", "mcc"}
-PACKAGE_ROOT = Path(__file__).resolve().parent
-
-
-def resolve_output_path(path_value: str | Path) -> Path:
-    path = Path(path_value)
-    if path.is_absolute():
-        return path
-    return PACKAGE_ROOT / path
-
-
-def resolve_config_path(path_value: str | Path | None) -> Path:
-    if path_value is None:
-        return PACKAGE_ROOT / "configs" / "default.yaml"
-
-    path = Path(path_value)
-    if path.is_absolute():
-        return path
-    if path.exists():
-        return path
-    return PACKAGE_ROOT / path
 
 
 def setup_logging(output_root: Path) -> tuple[Path, Path]:
@@ -42,7 +22,7 @@ def setup_logging(output_root: Path) -> tuple[Path, Path]:
     output_log_dir.mkdir(parents=True, exist_ok=True)
     output_log_path = output_log_dir / "run_experiment.log"
 
-    repo_log_dir = PACKAGE_ROOT / "log"
+    repo_log_dir = Path(__file__).resolve().parent / "log"
     repo_log_dir.mkdir(parents=True, exist_ok=True)
     repo_log_path = repo_log_dir / "run_experiment.log"
 
@@ -67,7 +47,7 @@ def load_config(config_path: Path) -> dict[str, Any]:
 
 
 def build_experiment_config(raw_config: dict[str, Any]) -> ExperimentConfig:
-    output_root = resolve_output_path(raw_config.get("output_root", "results_lopo_baseline"))
+    output_root = Path(raw_config.get("output_root", "results_lopo_baseline"))
     output_root.mkdir(parents=True, exist_ok=True)
     random_seed = int(raw_config.get("random_seed", 42))
     n_jobs = int(raw_config.get("n_jobs", 4))
@@ -173,14 +153,14 @@ def collect_results_for_global_outputs(
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Run LOPO baseline experiments for CPDP.")
     parser.add_argument("--granularity", choices=ALL_GRANULARITIES + ["all"], default=None, help="Granularity to run. Overrides config if provided.")
-    parser.add_argument("--config", default=None, help="Path to YAML config file.")
+    parser.add_argument("--config", default="configs/default.yaml", help="Path to YAML config file.")
     return parser
 
 
 def main() -> None:
     parser = build_parser()
     cli_args = parser.parse_args()
-    raw_config = load_config(resolve_config_path(cli_args.config))
+    raw_config = load_config(Path(cli_args.config))
     experiment_config = build_experiment_config(raw_config)
     output_log_path, repo_log_path = setup_logging(experiment_config.output_root)
     logging.info("Logging experiment output to %s", output_log_path)
@@ -198,7 +178,6 @@ def main() -> None:
             requested_granularities=granularities,
         )
         save_global_outputs(experiment_config.output_root, results_for_global_outputs)
-        logging.info("Skipping report-asset generation in the GitHub release package; raw experiment outputs have been refreshed only.")
         logging.info("LOPO baseline experiment completed for granularities: %s", ", ".join(granularities))
     except KeyboardInterrupt:
         logging.warning(

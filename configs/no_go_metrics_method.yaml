@@ -1,12 +1,11 @@
 output_root: results_lopo_baseline_no_go_metrics_matched
-granularity: all
+granularity: method
 random_seed: 42
 n_jobs: 6
 primary_metric: f1
 resampling: smote
 smote_k_neighbors: 1
 exclude_go_metrics: true
-generate_report_assets: false
 save_predictions: false
 models:
   - naive_bayes
