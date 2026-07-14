@@ -1,0 +1,7 @@
+left_granularity,right_granularity,comparison,metric,paired_target_count,wilcoxon_statistic,raw_pvalue,holm_adjusted_pvalue,holm_family,reject_at_0_05_after_holm
+commit,file,commit_vs_file,f1_1,16,0,3.051757812e-05,0.0001831054688,three granularity pairs x two co-primary metrics (six tests),True
+commit,file,commit_vs_file,mcc,16,0,3.051757812e-05,0.0001831054688,three granularity pairs x two co-primary metrics (six tests),True
+commit,method,commit_vs_method,f1_1,16,6,0.0004272460938,0.0009155273438,three granularity pairs x two co-primary metrics (six tests),True
+commit,method,commit_vs_method,mcc,16,0,3.051757812e-05,0.0001831054688,three granularity pairs x two co-primary metrics (six tests),True
+method,file,method_vs_file,f1_1,16,5,0.0003051757812,0.0009155273438,three granularity pairs x two co-primary metrics (six tests),True
+method,file,method_vs_file,mcc,16,38,0.1297302246,0.1297302246,three granularity pairs x two co-primary metrics (six tests),False

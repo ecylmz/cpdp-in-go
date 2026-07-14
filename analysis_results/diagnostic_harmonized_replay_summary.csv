@@ -1,0 +1,7 @@
+granularity,metric,target_count,mean_original,mean_harmonized,mean_harmonized_minus_original,wilcoxon_statistic,wilcoxon_pvalue,partial_feature_family_harmonization_only,remaining_confounds
+commit,f1_1,16,0.7618512082,0.6702706959,-0.0915805123,0,3.051757812e-05,True,prediction unit;labels;operational class proportion;dataset composition
+commit,mcc,16,0.3541891782,0.1334283052,-0.2207608729,0,3.051757812e-05,True,prediction unit;labels;operational class proportion;dataset composition
+file,f1_1,16,0.4376988797,0.4413873813,0.003688501603,65,0.8999328613,True,prediction unit;labels;operational class proportion;dataset composition
+file,mcc,16,0.04332413585,0.01861529263,-0.02470884322,34,0.08325195312,True,prediction unit;labels;operational class proportion;dataset composition
+method,f1_1,16,0.6043045194,0.6052178803,0.0009133609002,67,0.9799499512,True,prediction unit;labels;operational class proportion;dataset composition
+method,mcc,16,0.09167621128,0.03384203612,-0.05783417517,1,6.103515625e-05,True,prediction unit;labels;operational class proportion;dataset composition

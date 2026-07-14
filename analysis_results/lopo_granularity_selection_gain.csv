@@ -1,0 +1,4 @@
+granularity,best_single_model_name,best_single_view,delta_f1_1,delta_mcc,delta_auc,delta_pr_auc
+commit,random_forest,Best single model (Random Forest),0.0,0.0,0.0,0.0
+file,logistic_regression,Best single model (Logistic Regression),0.0077657417079518565,-0.014632099423635948,0.0009960999697213868,0.0006004489670505264
+method,naive_bayes,Best single model (Naive Bayes),0.0,0.0,0.0,0.0

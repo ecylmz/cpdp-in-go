@@ -863,6 +863,46 @@ def build_go_feature_correlation_rows(
     return pair_frame, pd.DataFrame(summary_rows)
 
 
+def build_go_feature_sparsity_rows(
+    contexts: dict[str, GranularityContext],
+) -> pd.DataFrame:
+    records: list[dict[str, Any]] = []
+    go_metrics_by_granularity = {
+        "file": list(GO_SPECIFIC_FILE_METRICS),
+        "method": list(GO_SPECIFIC_METHOD_METRICS),
+    }
+    for granularity, go_metrics in go_metrics_by_granularity.items():
+        project_frames = contexts[granularity].project_frames
+        for feature_name in go_metrics:
+            all_values = pd.concat(
+                [frame[feature_name] for frame in project_frames.values()],
+                ignore_index=True,
+            )
+            observed = all_values.dropna()
+            project_nonzero_fractions: list[float] = []
+            projects_with_nonzero = 0
+            for frame in project_frames.values():
+                project_values = frame[feature_name].dropna()
+                nonzero_fraction = float(project_values.ne(0).mean()) if len(project_values) else np.nan
+                project_nonzero_fractions.append(nonzero_fraction)
+                projects_with_nonzero += int(bool(project_values.ne(0).any()))
+            records.append(
+                {
+                    "granularity": granularity,
+                    "go_specific_feature": feature_name,
+                    "modeled_rows": int(len(all_values)),
+                    "missing_fraction": float(all_values.isna().mean()),
+                    "zero_fraction_among_observed": float(observed.eq(0).mean()) if len(observed) else np.nan,
+                    "nonzero_fraction_among_observed": float(observed.ne(0).mean()) if len(observed) else np.nan,
+                    "median_project_nonzero_fraction": float(np.nanmedian(project_nonzero_fractions)),
+                    "projects_with_any_nonzero": projects_with_nonzero,
+                    "project_count": len(project_frames),
+                    "descriptive_only": True,
+                }
+            )
+    return pd.DataFrame(records)
+
+
 def run_fixed_replays(
     data_root: Path,
     contexts: dict[str, GranularityContext],
@@ -1615,18 +1655,26 @@ def write_metadata(
     for granularity in GRANULARITIES:
         for file_name in ("run_signature.json", "per_project_results.csv"):
             input_path = results_root / granularity / file_name
-            input_hashes[str(input_path)] = file_sha256(input_path)
+            try:
+                input_label = input_path.relative_to(REPO_ROOT).as_posix()
+            except ValueError:
+                input_label = f"{results_root.name}/{granularity}/{file_name}"
+            input_hashes[input_label] = file_sha256(input_path)
+    try:
+        results_label = results_root.relative_to(REPO_ROOT).as_posix()
+    except ValueError:
+        results_label = results_root.name
+    data_label = "." if data_root == REPO_ROOT else f"external/{data_root.name}"
     metadata = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "generator": str(Path(__file__).resolve()),
+        "generator": Path(__file__).resolve().relative_to(REPO_ROOT).as_posix(),
         "random_seed": RANDOM_SEED,
         "bootstrap_resamples": BOOTSTRAP_RESAMPLES,
         "verification_absolute_tolerance": VERIFICATION_ATOL,
-        "data_root": str(data_root),
+        "data_root": data_label,
         "data_root_git_revision": git_revision(data_root),
-        "repository_root": str(REPO_ROOT),
-        "repository_git_revision": git_revision(REPO_ROOT),
-        "results_root": str(results_root),
+        "repository_root": ".",
+        "results_root": results_label,
         "input_sha256": input_hashes,
         "definitions": {
             "fold_local_selection": "highest recorded best_inner_f1, then best_inner_mcc, then recorded model order",
@@ -1669,6 +1717,7 @@ def main() -> None:
         [row for granularity in GRANULARITIES for row in label_audit_rows(contexts[granularity])]
     )
     go_pair_frame, go_summary_frame = build_go_feature_correlation_rows(contexts)
+    go_sparsity_frame = build_go_feature_sparsity_rows(contexts)
     replay_frames = run_fixed_replays(data_root, contexts)
     adequacy = build_adequacy_sensitivity_rows(contexts)
     holm = build_holm_rows(contexts)
@@ -1682,6 +1731,7 @@ def main() -> None:
         "transfer_boundaries": transfer_boundaries,
         "go_feature_correlations": go_pair_frame,
         "go_feature_summary": go_summary_frame,
+        "go_feature_sparsity": go_sparsity_frame,
         "effort_summary": summarize_effort(replay_frames["effort"]),
         "temporal_summary": summarize_temporal(replay_frames["temporal"]),
         "smote_k_summary": summarize_smote_k(replay_frames["smote_k"]),
@@ -1703,6 +1753,7 @@ def main() -> None:
         "transfer_boundaries": "diagnostic_transfer_boundaries.csv",
         "go_feature_correlations": "diagnostic_go_feature_correlations.csv",
         "go_feature_summary": "diagnostic_go_feature_correlations_summary.csv",
+        "go_feature_sparsity": "diagnostic_go_feature_sparsity.csv",
         "holm": "diagnostic_holm_adjusted.csv",
         "smote_k": "diagnostic_smote_k_replay.csv",
         "smote_k_summary": "diagnostic_smote_k_replay_summary.csv",
@@ -1721,6 +1772,7 @@ def main() -> None:
         "transfer_boundaries": ["granularity", "metric", "predictor"],
         "go_feature_correlations": ["granularity", "go_specific_feature", "generic_feature"],
         "go_feature_summary": ["granularity", "go_specific_feature"],
+        "go_feature_sparsity": ["granularity", "go_specific_feature"],
         "holm": ["comparison", "metric"],
         "smote_k": ["granularity", "smote_k", "target_project"],
         "smote_k_summary": ["granularity", "smote_k"],

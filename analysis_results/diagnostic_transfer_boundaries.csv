@@ -1,0 +1,19 @@
+granularity,metric,predictor,predictor_label,n_projects,spearman_rho,pvalue,bootstrap_ci_low,bootstrap_ci_high,valid_bootstrap_resamples,exploratory,causal_interpretation
+commit,selected_f1,abs_source_target_prevalence_gap,absolute source-target operational class-proportion gap,16,0.5382352941,0.03149322821,0.01049241353,0.9145167904,10000,True,False
+commit,selected_f1,log_target_rows,log target rows,16,-0.2088235294,0.4376585109,-0.7134432859,0.3373213825,10000,True,False
+commit,selected_f1,mean_abs_standardized_feature_mean_shift,mean absolute standardized feature-mean shift,16,0.2088235294,0.4376585109,-0.4422911662,0.7070272906,10000,True,False
+commit,selected_mcc,abs_source_target_prevalence_gap,absolute source-target operational class-proportion gap,16,-0.2647058824,0.3218043959,-0.7537560638,0.2810685367,10000,True,False
+commit,selected_mcc,log_target_rows,log target rows,16,0.1264705882,0.6406944408,-0.4829290768,0.6537442445,10000,True,False
+commit,selected_mcc,mean_abs_standardized_feature_mean_shift,mean absolute standardized feature-mean shift,16,0.06470588235,0.8118214513,-0.4203478812,0.5304606241,10000,True,False
+file,selected_f1,abs_source_target_prevalence_gap,absolute source-target operational class-proportion gap,16,0.1970588235,0.4644642112,-0.406877506,0.7854377208,10000,True,False
+file,selected_f1,log_target_rows,log target rows,16,-0.3882352941,0.1372816237,-0.7794418867,0.2252299955,10000,True,False
+file,selected_f1,mean_abs_standardized_feature_mean_shift,mean absolute standardized feature-mean shift,16,0.1470588235,0.5867933937,-0.3434187863,0.5691039386,10000,True,False
+file,selected_mcc,abs_source_target_prevalence_gap,absolute source-target operational class-proportion gap,16,-0.01470588235,0.956891924,-0.5976126801,0.5862248296,10000,True,False
+file,selected_mcc,log_target_rows,log target rows,16,-0.07941176471,0.770025319,-0.6192083822,0.4662917425,10000,True,False
+file,selected_mcc,mean_abs_standardized_feature_mean_shift,mean absolute standardized feature-mean shift,16,0.3205882353,0.2260454222,-0.1641791045,0.6651843919,10000,True,False
+method,selected_f1,abs_source_target_prevalence_gap,absolute source-target operational class-proportion gap,16,0.6794117647,0.003793432669,0.138566964,0.9427775194,10000,True,False
+method,selected_f1,log_target_rows,log target rows,16,-0.3970588235,0.1278060091,-0.7384907567,0.122787273,10000,True,False
+method,selected_f1,mean_abs_standardized_feature_mean_shift,mean absolute standardized feature-mean shift,16,0.1852941176,0.4920570502,-0.4502285718,0.7436757061,10000,True,False
+method,selected_mcc,abs_source_target_prevalence_gap,absolute source-target operational class-proportion gap,16,0.3382352941,0.2000655588,-0.2470699337,0.7203039858,10000,True,False
+method,selected_mcc,log_target_rows,log target rows,16,-0.1264705882,0.6406944408,-0.5988410104,0.4065363712,10000,True,False
+method,selected_mcc,mean_abs_standardized_feature_mean_shift,mean absolute standardized feature-mean shift,16,0.2705882353,0.3107606271,-0.3102435604,0.7655873173,10000,True,False

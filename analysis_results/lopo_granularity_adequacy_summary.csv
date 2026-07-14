@@ -1,0 +1,4 @@
+granularity,primary_count,exploratory_count,insufficient_count
+commit,13,2,1
+file,12,3,1
+method,15,1,0

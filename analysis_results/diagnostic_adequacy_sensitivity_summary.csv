@@ -1,0 +1,7 @@
+comparison,metric,grid_cells,valid_grid_cells,sign_stable_grid_cells,minimum_paired_targets,maximum_paired_targets,minimum_mean_difference,maximum_mean_difference,minimum_wilcoxon_pvalue,maximum_wilcoxon_pvalue
+commit_vs_file,f1_1,15,15,15,9,15,0.3295248456,0.3473480488,6.103515625e-05,0.00390625
+commit_vs_file,mcc,15,15,15,9,15,0.3073981745,0.3249460968,6.103515625e-05,0.00390625
+commit_vs_method,f1_1,15,15,15,9,16,0.1575466888,0.1929212416,0.0004272460938,0.00390625
+commit_vs_method,mcc,15,15,15,9,16,0.2625129669,0.2762861277,3.051757812e-05,0.00390625
+method_vs_file,f1_1,15,15,15,10,15,0.1607667443,0.1799741576,0.0006103515625,0.009765625
+method_vs_file,mcc,15,15,15,10,15,0.03398191424,0.05337417051,0.1530761719,0.423828125

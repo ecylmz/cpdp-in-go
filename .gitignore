@@ -4,7 +4,6 @@ log/
 commit_data/
 file_data/
 method_data/
-results_*/
 analysis_output/
 __pycache__/
 **/__pycache__/

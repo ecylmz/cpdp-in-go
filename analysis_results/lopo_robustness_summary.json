@@ -1,0 +1,66 @@
+{
+  "resampling_orderings": {
+    "smote_k1": {
+      "f1_order": [
+        "commit",
+        "method",
+        "file"
+      ],
+      "mcc_order": [
+        "commit",
+        "method",
+        "file"
+      ]
+    },
+    "random_over": {
+      "f1_order": [
+        "commit",
+        "method",
+        "file"
+      ],
+      "mcc_order": [
+        "commit",
+        "method",
+        "file"
+      ]
+    },
+    "no_resampling": {
+      "f1_order": [
+        "commit",
+        "method",
+        "file"
+      ],
+      "mcc_order": [
+        "commit",
+        "method",
+        "file"
+      ]
+    }
+  },
+  "selection_orderings": {
+    "f1_primary": {
+      "f1_order": [
+        "commit",
+        "method",
+        "file"
+      ],
+      "mcc_order": [
+        "commit",
+        "method",
+        "file"
+      ]
+    },
+    "mcc_primary": {
+      "f1_order": [
+        "commit",
+        "method",
+        "file"
+      ],
+      "mcc_order": [
+        "commit",
+        "method",
+        "file"
+      ]
+    }
+  }
+}

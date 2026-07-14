@@ -1,0 +1,108 @@
+{
+  "selection_rule": "for each held-out target project, choose the model with the best inner-CV primary metric",
+  "commit_vs_file": {
+    "left_granularity": "commit",
+    "right_granularity": "file",
+    "left_selection_rule": "For each held-out target project, choose the model with the best inner-CV f1; tie-break with inner-CV mcc, then config order.",
+    "right_selection_rule": "For each held-out target project, choose the model with the best inner-CV f1; tie-break with inner-CV mcc, then config order.",
+    "left_selected_model_counts": {
+      "naive_bayes": 0,
+      "logistic_regression": 0,
+      "random_forest": 16,
+      "xgboost": 0
+    },
+    "right_selected_model_counts": {
+      "naive_bayes": 16,
+      "logistic_regression": 0,
+      "random_forest": 0,
+      "xgboost": 0
+    },
+    "common_projects": 16,
+    "metrics": {
+      "f1": {
+        "wilcoxon_statistic": 0.0,
+        "wilcoxon_pvalue": 3.0517578125e-05,
+        "cliffs_delta": 0.9921875,
+        "cliffs_delta_magnitude": "large",
+        "paired_sample_count": 16
+      },
+      "mcc": {
+        "wilcoxon_statistic": 0.0,
+        "wilcoxon_pvalue": 3.0517578125e-05,
+        "cliffs_delta": 1.0,
+        "cliffs_delta_magnitude": "large",
+        "paired_sample_count": 16
+      }
+    }
+  },
+  "commit_vs_method": {
+    "left_granularity": "commit",
+    "right_granularity": "method",
+    "left_selection_rule": "For each held-out target project, choose the model with the best inner-CV f1; tie-break with inner-CV mcc, then config order.",
+    "right_selection_rule": "For each held-out target project, choose the model with the best inner-CV f1; tie-break with inner-CV mcc, then config order.",
+    "left_selected_model_counts": {
+      "naive_bayes": 0,
+      "logistic_regression": 0,
+      "random_forest": 16,
+      "xgboost": 0
+    },
+    "right_selected_model_counts": {
+      "naive_bayes": 16,
+      "logistic_regression": 0,
+      "random_forest": 0,
+      "xgboost": 0
+    },
+    "common_projects": 16,
+    "metrics": {
+      "f1": {
+        "wilcoxon_statistic": 7.0,
+        "wilcoxon_pvalue": 0.000579833984375,
+        "cliffs_delta": 0.7890625,
+        "cliffs_delta_magnitude": "large",
+        "paired_sample_count": 16
+      },
+      "mcc": {
+        "wilcoxon_statistic": 1.0,
+        "wilcoxon_pvalue": 6.103515625e-05,
+        "cliffs_delta": 0.9609375,
+        "cliffs_delta_magnitude": "large",
+        "paired_sample_count": 16
+      }
+    }
+  },
+  "method_vs_file": {
+    "left_granularity": "method",
+    "right_granularity": "file",
+    "left_selection_rule": "For each held-out target project, choose the model with the best inner-CV f1; tie-break with inner-CV mcc, then config order.",
+    "right_selection_rule": "For each held-out target project, choose the model with the best inner-CV f1; tie-break with inner-CV mcc, then config order.",
+    "left_selected_model_counts": {
+      "naive_bayes": 16,
+      "logistic_regression": 0,
+      "random_forest": 0,
+      "xgboost": 0
+    },
+    "right_selected_model_counts": {
+      "naive_bayes": 16,
+      "logistic_regression": 0,
+      "random_forest": 0,
+      "xgboost": 0
+    },
+    "common_projects": 16,
+    "metrics": {
+      "f1": {
+        "wilcoxon_statistic": 12.0,
+        "wilcoxon_pvalue": 0.00213623046875,
+        "cliffs_delta": 0.578125,
+        "cliffs_delta_magnitude": "large",
+        "paired_sample_count": 16
+      },
+      "mcc": {
+        "wilcoxon_statistic": 32.0,
+        "wilcoxon_pvalue": 0.065399169921875,
+        "cliffs_delta": 0.2734375,
+        "cliffs_delta_magnitude": "small",
+        "paired_sample_count": 16
+      }
+    }
+  }
+}

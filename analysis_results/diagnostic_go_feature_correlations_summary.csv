@@ -1,0 +1,12 @@
+granularity,go_specific_feature,strongest_generic_feature,strongest_median_absolute_rho,median_of_pairwise_median_absolute_rho,descriptive_only
+file,channel_count,loop_count,0.2337147839,0.11574041,True
+file,context_usage_count,import_count,0.3691032403,0.1793925692,True
+file,defer_count,import_count,0.5360683089,0.2882630943,True
+file,error_handling_count,complexity,0.7513629668,0.4229609979,True
+file,goroutine_count,import_count,0.3087107722,0.1951526694,True
+file,json_tag_count,struct_count,0.3353329494,0.1017143693,True
+file,pointer_receiver_count,method_count,0.6952755746,0.261586368,True
+method,channel_count,token_count,0.09191213207,0.08766521732,True
+method,defer_count,nloc,0.1988145656,0.1703470948,True
+method,error_handling_count,cyclomatic_complexity,0.6752008018,0.6381623929,True
+method,goroutine_count,loop_count,0.1236649035,0.07744254689,True
